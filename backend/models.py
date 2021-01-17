@@ -23,18 +23,14 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     db.create_all()
    
-'''
-Question
-
-'''
 class Question(db.Model):  
   __tablename__ = 'questions'
 
   id = Column(Integer, primary_key=True)
   question = Column(String)
   answer = Column(String)
-  category = Column(String)
   difficulty = Column(Integer)
+  category = db.Column(db.String, db.ForeignKey('categories.id'))
 
   def __init__(self, question, answer, category, difficulty):
     self.question = question
@@ -62,15 +58,12 @@ class Question(db.Model):
       'difficulty': self.difficulty
     }
 
-'''
-Category
-
-'''
 class Category(db.Model):  
   __tablename__ = 'categories'
 
   id = Column(Integer, primary_key=True)
   type = Column(String)
+  questions = db.relationship('Question', backref="question_category")
 
   def __init__(self, type):
     self.type = type
