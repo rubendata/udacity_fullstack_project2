@@ -30,7 +30,7 @@ class Question(db.Model):
   question = Column(String)
   answer = Column(String)
   difficulty = Column(Integer)
-  category = db.Column(db.String, db.ForeignKey('categories.id'))
+  category = db.Column(db.String, db.ForeignKey('categories.id'), nullable=False)
 
   def __init__(self, question, answer, category, difficulty):
     self.question = question
