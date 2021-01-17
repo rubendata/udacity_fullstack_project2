@@ -15,7 +15,7 @@ def create_app(test_config=None):
   setup_db(app)
   migrate = Migrate(app,db)
   
-  cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+  cors = CORS(app, resources={r"*": {"origins": "*"}}) ##check if this is still needed: /api/*
 
   # CORS Headers 
   @app.after_request
@@ -32,13 +32,22 @@ def create_app(test_config=None):
   def hello():
     return "hello"
 
-  @app.route("/<categories_type>/")
-  def get_category(categories_type):
-    category = Category.query.filter(Category.type.ilike(categories_type)).one_or_none()
-    print(dir(category))
+  @app.route('/<category_name>')
+  def get_category(category_name):
+    
+    category = Category.query.filter(Category.type.ilike(category_name)).first()
+    
+    print("category ID: {}".format(category.id))
+    join_questions = db.session.query(Category, Question).join(Question).filter(Category.id==category.id).all()
+    for category, question in join_questions:
+      print(question.question)
+
+    formatted_questions = [question.format() for category, question in join_questions]
+
     return jsonify({
       'success': True,
       'Category': category.type,
+      'questions': formatted_questions,
       })
 
 
