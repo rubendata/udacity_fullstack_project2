@@ -1,0 +1,13 @@
+(https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+1. install python3 virtual env library
+sudo apt-get install python3-venv
+
+2. create virtual environment
+python3 -m venv env
+# The second argument is the location to create the virtual environment. Generally, you can just create this in your project and call it env.
+
+3. change to virtual environment
+source env/bin/activate
+
+4. write the required libraries into requirement file: (https://pip.pypa.io/en/latest/user_guide/#requirements-files)
+python -m pip freeze > requirements.txt
