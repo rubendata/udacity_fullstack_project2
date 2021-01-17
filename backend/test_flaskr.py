@@ -37,8 +37,7 @@ class TriviaTestCase(unittest.TestCase):
         """Test / GET"""
         res = self.client().get("/Art/")
         self.assertEqual(res.status_code,200)
-
-
+        
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

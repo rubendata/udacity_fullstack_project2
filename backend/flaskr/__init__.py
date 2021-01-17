@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_migrate import Migrate
 import random
 
 from models import setup_db, Question, Category
@@ -32,8 +33,12 @@ def create_app(test_config=None):
 
   @app.route("/<categories_type>/")
   def get_category(categories_type):
-    categories = Category.query.filter(Category.type.ilike(categories_type)).one_or_none()
-    return categories.type
+    category = Category.query.filter(Category.type.ilike(categories_type)).one_or_none()
+    print(dir(category))
+    return jsonify({
+      'success': True,
+      'Category': category.type,
+      })
 
 
   '''
