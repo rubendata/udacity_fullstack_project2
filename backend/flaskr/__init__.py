@@ -32,24 +32,49 @@ def create_app(test_config=None):
   def hello():
     return "hello"
 
-  @app.route('/<category_name>')
-  def get_category(category_name):
-    
-    category = Category.query.filter(Category.type.ilike(category_name)).first()
-    
-    print("category ID: {}".format(category.id))
-    join_questions = db.session.query(Category, Question).join(Question).filter(Category.id==category.id).all()
-    for category, question in join_questions:
-      print(question.question)
+  # @app.route('/<category_name>')
+  # def get_specific_category(category_name):
+  #   category = Category.query.filter(Category.type.ilike(category_name)).first()
+  #   join_questions = db.session.query(Category, Question).join(Question).filter(Category.id==category.id).all()
+  #   for category, question in join_questions:
+  #     #print(question.question)
+  #     formatted_questions = [question.format() for category, question in join_questions]
 
-    formatted_questions = [question.format() for category, question in join_questions]
+  #   return jsonify({
+  #     'success': True,
+  #     'Category': category.type,
+  #     'questions': formatted_questions,
+  #     })
+  
+  
+  
+  @app.route('/questions')
+  def get_category():
+    try:
+      #pagination
+      page= request.args.get("page",1,type=int)
+      start = (page-1)*10
+      end = start + QUESTIONS_PER_PAGE
+      
+      #categories
+      categories = Category.query.all()
+      formatted_categories = [category.format() for category in categories]
+      #current_category = request.form("current_category")
+      
 
-    return jsonify({
-      'success': True,
-      'Category': category.type,
-      'questions': formatted_questions,
-      })
+      #questions
+      questions = Question.query.all()
+      formatted_questions = [question.format() for question in questions]
 
+      return jsonify({
+        'success': True,
+        'questions': formatted_questions,
+        'total_questions': len(questions),
+        'categories': formatted_categories,
+        'current_category': ""
+        })
+    except Exception as e:
+      print(e)
 
   '''
   @TODO: 
