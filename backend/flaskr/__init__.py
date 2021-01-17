@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 import random
 
-from models import setup_db, Question, Category
+from models import setup_db, Question, Category, db
 
 QUESTIONS_PER_PAGE = 10
 
@@ -13,6 +13,7 @@ def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
   setup_db(app)
+  migrate = Migrate(app,db)
   
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 

@@ -3,6 +3,7 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 
+
 database_username = 'postgres'
 database_password = 'postgres'
 
@@ -21,7 +22,7 @@ def setup_db(app, database_path=database_path):
     db.app = app
     db.init_app(app)
     db.create_all()
-
+   
 '''
 Question
 
