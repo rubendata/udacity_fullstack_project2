@@ -66,9 +66,12 @@ def create_app(test_config=None):
       questions = Question.query.all()
       formatted_questions = [question.format() for question in questions]
 
+      for i in formatted_questions[start:end]:
+        print(i)
+
       return jsonify({
         'success': True,
-        'questions': formatted_questions,
+        'questions': formatted_questions[start:end],
         'total_questions': len(questions),
         'categories': formatted_categories,
         'current_category': ""

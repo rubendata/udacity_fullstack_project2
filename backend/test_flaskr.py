@@ -33,14 +33,24 @@ class TriviaTestCase(unittest.TestCase):
     TODO
     Write at least one test for each test for successful operation and for expected errors.
     """
-    def test_get_specific_category(self):
+    # def test_get_specific_category(self):
+    #     """Test /<category_name> GET"""
+    #     categories = Category.query.all()
+    #     for category in categories:
+    #         res = self.client().get(category.type)
+    #         self.assertEqual(res.status_code,200)
+    def test_get_root_hello(self):
         """Test /<category_name> GET"""
-        categories = Category.query.all()
-        for category in categories:
-            res = self.client().get(category.type)
-            self.assertEqual(res.status_code,200)
+        res = self.client().get("/")
+        self.assertEqual(res.status_code,200)
 
+    def test_get_questions(self):
+        res = self.client().get("/questions")
+        data = json.loads(res.data)
+        data_length = len(data["questions"])
         
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(data_length,10)
             
         
         
