@@ -11,3 +11,6 @@ source env/bin/activate
 
 4. write the required libraries into requirement file: (https://pip.pypa.io/en/latest/user_guide/#requirements-files)
 python -m pip freeze > requirements.txt
+
+5. install requirements
+pip3 install -r requirements.txt
