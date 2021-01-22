@@ -93,27 +93,18 @@ def create_app(test_config=None):
     
     try:
       question = Question.query.filter_by(id=question_id).one_or_none()
-      formatted_question = question.format()
       if question_id==None or question==None:
         abort(404)
       question.delete()
       return jsonify({
         'success': True,
-        'question': formatted_question['id']
+        'quesion_id': question_id
         
         })
     except Exception as e:
       print(e)
  
-  '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
-
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page. 
-  '''
-
-
+  
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()
@@ -134,17 +125,6 @@ def create_app(test_config=None):
     except Exception as e:
       print(e)
  
-  '''
-  @TODO: 
-  Create an endpoint to POST a new question, 
-  which will require the question and answer text, 
-  category, and difficulty score.
-
-  TEST: When you submit a question on the "Add" tab, 
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.  
-  '''
-
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
