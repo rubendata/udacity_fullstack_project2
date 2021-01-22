@@ -47,9 +47,22 @@ def create_app(test_config=None):
   #     })
   
   
-  
+  @app.route("/categories")
+  def get_categories():
+    categories = Category.query.all()
+    #formatted_categories = [category.format() for category in categories]
+    types = []
+    for category in categories:
+      types.append(category.type)
+      
+    return jsonify({
+      'success': True,
+      'categories': types
+    })
+
+
   @app.route('/questions')
-  def get_category():
+  def get_questions():
     try:
       #pagination
       page= request.args.get("page",1,type=int)
@@ -66,9 +79,6 @@ def create_app(test_config=None):
       questions = Question.query.all()
       formatted_questions = [question.format() for question in questions]
 
-      for i in formatted_questions[start:end]:
-        print(i)
-
       return jsonify({
         'success': True,
         'questions': formatted_questions[start:end],
@@ -79,19 +89,18 @@ def create_app(test_config=None):
     except Exception as e:
       print(e)
 
-  '''
-  @TODO: 
-  Create an endpoint to handle GET requests for questions, 
-  including pagination (every 10 questions). 
-  This endpoint should return a list of questions, 
-  number of total questions, current category, categories. 
-
-  TEST: At this point, when you start the application
-  you should see questions and categories generated,
-  ten questions per page and pagination at the bottom of the screen for three pages.
-  Clicking on the page numbers should update the questions. 
-  '''
-
+  @app.route("/questions/<question_id>")
+  def get_specific_question(question_id):
+    question = Question.query.filter_by(id=question_id).one_or_none()
+    if question_id==None or question==None:
+      abort(404)
+    formatted_question = question.format()
+    return jsonify({
+      'success': True,
+      'question': formatted_question
+      
+      })
+ 
   '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
@@ -100,6 +109,27 @@ def create_app(test_config=None):
   This removal will persist in the database and when you refresh the page. 
   '''
 
+
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    body = request.get_json()
+    try:
+      question = Question(
+        question = body['question'],
+        answer = body['answer'],
+        difficulty = body['difficulty'],
+        category = body['category'],
+        )
+     
+      question.insert()
+      
+      return jsonify({
+        'success': True,
+        'question': question.format()
+      })
+    except Exception as e:
+      print(e)
+ 
   '''
   @TODO: 
   Create an endpoint to POST a new question, 

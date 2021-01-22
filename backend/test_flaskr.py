@@ -51,8 +51,31 @@ class TriviaTestCase(unittest.TestCase):
         
         self.assertEqual(res.status_code,200)
         self.assertEqual(data_length,10)
-            
+    
+    def test_get_specific_question(self):
+        """Test /questions/<question_id>  GET"""
+        res = self.client().get("questions/5")
+        self.assertEqual(res.status_code,200)
+        res = self.client().get("questions/1") #id 1 does not exist
+        self.assertEqual(res.status_code,404)
+        res = self.client().get("questions/") #id empty should be 404
+        self.assertEqual(res.status_code,404)
         
+    def test_create_new_question(self):
+        res = self.client().post("/questions", json=(
+            {'question':'test question', 
+            'answer':'test answer', 
+            'category':1, 
+            'difficulty':1}
+            )
+            )
+        data = json.loads(res.data)
+        print(data)
+        self.assertEqual(res.status_code,200)
+    
+    def test_get_categories(self):
+        res = self.client().get("/categories")
+        self.assertEqual(res.status_code,200)
         
 # Make the tests conveniently executable
 if __name__ == "__main__":
