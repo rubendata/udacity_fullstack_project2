@@ -62,24 +62,16 @@ class TriviaTestCase(unittest.TestCase):
             )
             )
         data = json.loads(res.data)
-        #print(data)
+        print(data)
         self.assertEqual(res.status_code,200)
     
     def test_delete_question(self):
         """Test /questions/<question_id>  DELETE"""
         questions = Question.query.all()
         last_question = questions[len(questions)-1]
-        
-        #res = self.client().delete("/questions/{}".format(questions.id))
         res = self.client().delete("/questions/{}".format(last_question.id))
-        #data = json.loads(res.data)
-        #print(data)
         self.assertEqual(res.status_code,200)
-        # res = self.client().get("questions/1") #id 1 does not exist
-        # self.assertEqual(res.status_code,404)
-        # res = self.client().get("questions/") #id empty should be 404
-        # self.assertEqual(res.status_code,404)
-
+      
     def test_get_categories(self):
         res = self.client().get("/categories")
         self.assertEqual(res.status_code,200)
