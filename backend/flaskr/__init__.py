@@ -50,7 +50,6 @@ def create_app(test_config=None):
   @app.route("/categories")
   def get_categories():
     categories = Category.query.all()
-    #formatted_categories = [category.format() for category in categories]
     types = []
     for category in categories:
       types.append(category.type)
@@ -89,17 +88,22 @@ def create_app(test_config=None):
     except Exception as e:
       print(e)
 
-  @app.route("/questions/<question_id>")
+  @app.route("/questions/<question_id>", methods=['DELETE']) #this will be the delete route
   def get_specific_question(question_id):
-    question = Question.query.filter_by(id=question_id).one_or_none()
-    if question_id==None or question==None:
-      abort(404)
-    formatted_question = question.format()
-    return jsonify({
-      'success': True,
-      'question': formatted_question
-      
-      })
+    
+    try:
+      question = Question.query.filter_by(id=question_id).one_or_none()
+      formatted_question = question.format()
+      if question_id==None or question==None:
+        abort(404)
+      question.delete()
+      return jsonify({
+        'success': True,
+        'question': formatted_question['id']
+        
+        })
+    except Exception as e:
+      print(e)
  
   '''
   @TODO: 
