@@ -23,30 +23,13 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
-  '''
-  @TODO: 
-  Create an endpoint to handle GET requests 
-  for all available categories.
-  '''
+
+ 
   @app.route("/")
   def hello():
     return "hello"
 
-  # @app.route('/<category_name>')
-  # def get_specific_category(category_name):
-  #   category = Category.query.filter(Category.type.ilike(category_name)).first()
-  #   join_questions = db.session.query(Category, Question).join(Question).filter(Category.id==category.id).all()
-  #   for category, question in join_questions:
-  #     #print(question.question)
-  #     formatted_questions = [question.format() for category, question in join_questions]
-
-  #   return jsonify({
-  #     'success': True,
-  #     'Category': category.type,
-  #     'questions': formatted_questions,
-  #     })
-  
-  
+    
   @app.route("/categories")
   def get_categories():
     categories = Category.query.all()
@@ -136,12 +119,13 @@ def create_app(test_config=None):
   
   @app.route("/categories/<category_id>/questions")
   def get_category_questions(category_id):
-      join_questions = db.session.query(Category, Question).join(Question).filter(Category.id==category_id).all()
+      category_id = int(category_id)+1
+      questions = Question.query.filter_by(category=category_id).all()
+      formatted_questions = [question.format() for question in questions]
       
-      formatted_questions = [question.format() for category, question in join_questions]
       return jsonify({
         'success': True,
-        'questions': formatted_questions,
+        'questions': formatted_questions
         })
 
   '''
