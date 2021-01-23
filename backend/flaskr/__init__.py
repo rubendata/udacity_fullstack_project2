@@ -134,7 +134,15 @@ def create_app(test_config=None):
       print(e)
  
   
-  
+  @app.route("/categories/<category_id>/questions")
+  def get_category_questions(category_id):
+      join_questions = db.session.query(Category, Question).join(Question).filter(Category.id==category_id).all()
+      
+      formatted_questions = [question.format() for category, question in join_questions]
+      return jsonify({
+        'success': True,
+        'questions': formatted_questions,
+        })
 
   '''
   @TODO: 

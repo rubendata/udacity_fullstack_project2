@@ -84,7 +84,9 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().post("/questions", json=({'searchTerm':"vbsjrjhgsejhvgsehkgvkgvsehgcsehgbf"}))
         self.assertEqual(res.status_code,200)
         
-    
+    def test_get_category_questions(self):
+        res = self.client().get("/categories/1/questions")
+        self.assertEqual(res.status_code,200)
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
