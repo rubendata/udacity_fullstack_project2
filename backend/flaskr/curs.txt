@@ -1,0 +1,5 @@
+Test Search
+curl -X POST -H "Content-Type:application/json" -d '{"searchTerm":"box"}' http://localhost:3000/questions
+
+Test Create
+curl -X POST -H "Content-Type:application/json" -d '{"question":"question test","answer":"answer test","difficulty":1,"category":"2"}' http://localhost:3000/questions

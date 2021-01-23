@@ -62,7 +62,7 @@ class TriviaTestCase(unittest.TestCase):
             )
             )
         data = json.loads(res.data)
-        print(data)
+        #print(data)
         self.assertEqual(res.status_code,200)
     
     def test_delete_question(self):
@@ -76,6 +76,15 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().get("/categories")
         self.assertEqual(res.status_code,200)
         
+    def test_search_question(self):
+        res = self.client().post("/questions", json=({'searchTerm':"test"}))
+        self.assertEqual(res.status_code,200)
+        res = self.client().post("/questions", json=({'searchTerm':""}))
+        self.assertEqual(res.status_code,200)
+        res = self.client().post("/questions", json=({'searchTerm':"vbsjrjhgsejhvgsehkgvkgvsehgcsehgbf"}))
+        self.assertEqual(res.status_code,200)
+        
+    
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
