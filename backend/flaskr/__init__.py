@@ -59,16 +59,13 @@ def create_app(test_config=None):
       #categories
       categories = Category.query.all()
       formatted_categories = [category.format() for category in categories]
-      #current_category = request.form("current_category")
       
 
       #questions
       questions = Question.query.all()
       formatted_questions = [question.format() for question in questions]
 
-      for i in formatted_questions[start:end]:
-        print(i)
-
+      
       return jsonify({
         'success': True,
         'questions': formatted_questions[start:end],
@@ -79,19 +76,27 @@ def create_app(test_config=None):
     except Exception as e:
       print(e)
 
-  '''
-  @TODO: 
-  Create an endpoint to handle GET requests for questions, 
-  including pagination (every 10 questions). 
-  This endpoint should return a list of questions, 
-  number of total questions, current category, categories. 
+  @app.route("/questions/<question_id>")
+  def get_specific_question(question_id):
+    try:
+      print(question_id)
+      question = Question.query.filter_by(id=question_id).one_or_none()
+      formatted_question = question.format()
+      print(question)
 
-  TEST: At this point, when you start the application
-  you should see questions and categories generated,
-  ten questions per page and pagination at the bottom of the screen for three pages.
-  Clicking on the page numbers should update the questions. 
-  '''
-
+      #categories
+      categories = Category.query.all()
+      formatted_categories = [category.format() for category in categories]
+      #current_category = request.form("current_category")
+      return jsonify({
+          'success': True,
+          'questions': formatted_question,
+          'total_questions': 1,
+          'categories': formatted_categories,
+          'current_category': ""
+          })
+    except Exception as e:
+      print (e)
   '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
