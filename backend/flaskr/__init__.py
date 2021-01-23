@@ -47,9 +47,21 @@ def create_app(test_config=None):
   #     })
   
   
-  
+  @app.route("/categories")
+  def get_categories():
+    categories = Category.query.all()
+    types = []
+    for category in categories:
+      types.append(category.type)
+      
+    return jsonify({
+      'success': True,
+      'categories': types
+    })
+
+
   @app.route('/questions')
-  def get_category():
+  def get_questions():
     try:
       #pagination
       page= request.args.get("page",1,type=int)
@@ -65,7 +77,6 @@ def create_app(test_config=None):
       questions = Question.query.all()
       formatted_questions = [question.format() for question in questions]
 
-      
       return jsonify({
         'success': True,
         'questions': formatted_questions[start:end],
@@ -76,46 +87,43 @@ def create_app(test_config=None):
     except Exception as e:
       print(e)
 
-  @app.route("/questions/<question_id>")
+  @app.route("/questions/<question_id>", methods=['DELETE']) #this will be the delete route
   def get_specific_question(question_id):
+    
     try:
-      print(question_id)
       question = Question.query.filter_by(id=question_id).one_or_none()
-      formatted_question = question.format()
-      print(question)
-
-      #categories
-      categories = Category.query.all()
-      formatted_categories = [category.format() for category in categories]
-      #current_category = request.form("current_category")
+      if question_id==None or question==None:
+        abort(404)
+      question.delete()
       return jsonify({
-          'success': True,
-          'questions': formatted_question,
-          'total_questions': 1,
-          'categories': formatted_categories,
-          'current_category': ""
-          })
+        'success': True,
+        'quesion_id': question_id
+        
+        })
     except Exception as e:
-      print (e)
-  '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
-
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page. 
-  '''
-
-  '''
-  @TODO: 
-  Create an endpoint to POST a new question, 
-  which will require the question and answer text, 
-  category, and difficulty score.
-
-  TEST: When you submit a question on the "Add" tab, 
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.  
-  '''
-
+      print(e)
+ 
+  
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    body = request.get_json()
+    try:
+      question = Question(
+        question = body['question'],
+        answer = body['answer'],
+        difficulty = body['difficulty'],
+        category = body['category'],
+        )
+     
+      question.insert()
+      
+      return jsonify({
+        'success': True,
+        'question': question.format()
+      })
+    except Exception as e:
+      print(e)
+ 
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 

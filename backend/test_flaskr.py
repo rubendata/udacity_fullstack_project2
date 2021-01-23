@@ -51,8 +51,30 @@ class TriviaTestCase(unittest.TestCase):
         
         self.assertEqual(res.status_code,200)
         self.assertEqual(data_length,10)
+    
             
-        
+    def test_create_new_question(self):
+        res = self.client().post("/questions", json=(
+            {'question':'test question', 
+            'answer':'test answer', 
+            'category':1, 
+            'difficulty':1}
+            )
+            )
+        data = json.loads(res.data)
+        print(data)
+        self.assertEqual(res.status_code,200)
+    
+    def test_delete_question(self):
+        """Test /questions/<question_id>  DELETE"""
+        questions = Question.query.all()
+        last_question = questions[len(questions)-1]
+        res = self.client().delete("/questions/{}".format(last_question.id))
+        self.assertEqual(res.status_code,200)
+      
+    def test_get_categories(self):
+        res = self.client().get("/categories")
+        self.assertEqual(res.status_code,200)
         
 # Make the tests conveniently executable
 if __name__ == "__main__":
