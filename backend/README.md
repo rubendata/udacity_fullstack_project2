@@ -67,7 +67,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
 REVIEW_COMMENT
-```
+
 This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
 
 Endpoints
@@ -76,19 +76,194 @@ GET ...
 POST ...
 DELETE ...
 
-GET '/categories'
+## ENDPOITS
+
+### GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+
+Example Response
+```
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
+```
+
+### GET '/questions'
+- Fetches a dictionary of 
+    - **categories** (list of dictionaries):  contains a list of dictionaries with "id" as key and the "type" as value
+    - **current_category** (str): contains the id of the current category
+    - **questions** (list of dictionaries):  contains a list of dictionaries containing with "id" as key and "category" (str), "difficulty" (int), "answer" (str) and "question" (str) as values 
+    - **success** (boolean): indicates that request was successful
+    - **total_questions** (int): returns total number of questions
+
+- Request Arguments: None
+
+Example Response:
+```
+{
+  "categories": [
+    {
+      "id": 0, 
+      "type": "Science"
+    }, 
+    ...
+  ], 
+  "current_category": "", 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 0, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "Alexander Fleming", 
+      "category": 0, 
+      "difficulty": 3, 
+      "id": 21, 
+      "question": "Who discovered penicillin?"
+    }, 
+    ...
+  ], 
+  "success": true, 
+  "total_questions": 19
+}
+```
+
+### DELETE '/questions/<question_id>'
+- Deletes a specific question and returns
+    - **success** (boolean): indicates that request was successful
+    - **question_id** (int): returns which question id was deleted
+
+- Request Arguments: question_id (int)
+
+Example Response:
+```
+{
+  "quesion_id": "27", 
+  "success": true
+}
 
 ```
 
+### POST '/questions'
+- Creates a new question or searches for question
+
+#### Create a new question:
+- Takes arguments for 
+    - answer (str)
+    - category (int)
+    - difficulty (int)
+    - question (str)
+- Returns
+    - **question** (dict): shows the answer, category, diffulty and question provided by the request and the id the question got in the database
+    - **success** (boolean): indicates that request was successful
+
+    
+
+- Request Arguments: answer, category, difficulty, question
+
+Example Response:
+```
+{
+  "question": {
+    "answer": "answer test", 
+    "category": 2, 
+    "difficulty": 1, 
+    "id": 27, 
+    "question": "question test"
+  }, 
+  "success": true
+}
+```
+#### Search a question:
+- Searches questions with a provided string
+- Returns a list of questions
+    - **questions** (list): list containing the question dictionaries that match the search term
+    - **success** (boolean): indicates that request was successful
+ 
+- Request Arguments: searchTerm (str)
+
+Example Response:
+```
+{
+  "question": {
+    "answer": "answer test", 
+    "category": 2, 
+    "difficulty": 1, 
+    "id": 27, 
+    "question": "question test"
+  }, 
+  "success": true
+}
+
+```
+
+### GET '/categories/<category_id>/questions'
+- shows the questions for a specific category
+- Returns
+    - **questions** (list): a list of question dictionaries for the selected category
+    - **success** (boolean): indicates that request was successful
+    - **current_category** (str): the id of the selected category
+
+
+- Request Arguments: question_id (int)
+
+Example Response:
+```
+{
+  "current_category": "0", 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 0, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    ...
+    
+  ], 
+  "success": true
+}
+
+```
+
+### POST '/quizzes'
+- starts the quiz for a given category
+- Returns
+    - **question** (dict): dictionary of question
+    - **success** (boolean): indicates that request was successful
+    
+- Request Arguments: 
+    - **quiz_category** (dict): contains "type" and "id", for example: "quiz_category": {"type":"Geography","id": "2"}}
+    - **previous_questions** (list): list of question id's for questions that were already asked
+
+Example Curl: 
+```
+curl -d '{"previous_questions": [2],"quiz_category": {"type":"Geography","id": "2"}}' -H 'Content-Type: application/json' -X POST http://127.0.0.1:5000/quizzes 
+```
+
+Example Response:
+```
+{
+  "question": {
+    "answer": "Lake Victoria", 
+    "category": 2, 
+    "difficulty": 2, 
+    "id": 13, 
+    "question": "What is the largest lake in Africa?"
+  }, 
+  "success": true
+}
+
+```
 
 ## Testing
 To run the tests, run
