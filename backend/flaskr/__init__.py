@@ -24,7 +24,9 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
 
-  
+
+### ENDPOINTS ###
+
   @app.route("/categories")
   def get_categories():
     categories = Category.query.all()
@@ -65,7 +67,7 @@ def create_app(test_config=None):
     except Exception as e:
       print(e)
 
-  @app.route("/questions/<question_id>", methods=['DELETE']) #this will be the delete route
+  @app.route("/questions/<question_id>", methods=['DELETE'])
   def get_specific_question(question_id):
     
     try:
@@ -80,6 +82,7 @@ def create_app(test_config=None):
         })
     except Exception as e:
       print(e)
+      abort(404)
  
   
   @app.route('/questions', methods=['POST'])
@@ -153,9 +156,12 @@ def create_app(test_config=None):
         questions = Question.query.filter_by(category=category_id).all()
         formatted_questions = [question.format() for question in questions]
       
+      #search if random question was already asked
       for question in formatted_questions:
         if question["id"] not in previous_questions:
           new_questions.append(question)
+      
+      #if no more questions left return a dummy question
       if len(new_questions) ==0:
         dummy_question = {
         "id":99,
@@ -179,7 +185,7 @@ def create_app(test_config=None):
       abort(422)
       
       
-  
+### ERRORHANDLERS ###
   @app.errorhandler(400)
   def bad_request(error):
     return jsonify({
