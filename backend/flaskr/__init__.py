@@ -35,11 +35,10 @@ def create_app(test_config=None):
 
     @app.route("/categories")
     def get_categories():
-        
         types = []
         try:
             categories = Category.query.all()
-            if len(categories)==0 or categories is None :
+            if len(categories) == 0 or categories is None:
                 abort(404)
             for category in categories:
                 types.append(category.type)
@@ -51,7 +50,6 @@ def create_app(test_config=None):
         except Exception as e:
             print(e)
             abort(404)
-
 
     @app.route('/questions')
     def get_questions():
@@ -69,7 +67,6 @@ def create_app(test_config=None):
             # questions
             questions = Question.query.all()
             formatted_questions = [question.format() for question in questions]
-            
             if len(questions[start:end]) == 0:
                 abort(404)
 
@@ -83,7 +80,7 @@ def create_app(test_config=None):
         except Exception as e:
             print(e)
             abort(404)
-            
+
     @app.route("/questions/<question_id>", methods=['DELETE'])
     def get_specific_question(question_id):
 
