@@ -35,15 +35,23 @@ def create_app(test_config=None):
 
     @app.route("/categories")
     def get_categories():
-        categories = Category.query.all()
+        
         types = []
-        for category in categories:
-            types.append(category.type)
+        try:
+            categories = Category.query.all()
+            if len(categories)==0 or categories is None :
+                abort(404)
+            for category in categories:
+                types.append(category.type)
 
-        return jsonify({
-            'success': True,
-            'categories': types
-        })
+            return jsonify({
+                'success': True,
+                'categories': types
+            })
+        except Exception as e:
+            print(e)
+            abort(404)
+
 
     @app.route('/questions')
     def get_questions():
@@ -61,17 +69,21 @@ def create_app(test_config=None):
             # questions
             questions = Question.query.all()
             formatted_questions = [question.format() for question in questions]
+            
+            if len(questions[start:end]) == 0:
+                abort(404)
 
             return jsonify({
                 'success': True,
                 'questions': formatted_questions[start:end],
-                'total_questions': len(questions),
+                'total_questions': len(questions[start:end]),
                 'categories': formatted_categories,
                 'current_category': ""
             })
         except Exception as e:
             print(e)
-
+            abort(404)
+            
     @app.route("/questions/<question_id>", methods=['DELETE'])
     def get_specific_question(question_id):
 

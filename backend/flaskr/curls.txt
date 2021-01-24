@@ -4,8 +4,5 @@ curl -X POST -H "Content-Type:application/json" -d '{"searchTerm":"box"}' http:/
 Test Create question
 curl -X POST -H "Content-Type:application/json" -d '{"question":"question test","answer":"answer test","difficulty":1,"category":"2"}' http://localhost:3000/questions
 
-Test start quiz
-curl -X POST -H "Content-Type:application/json" -d '{"quiz_category": {"id": 0, "type": "click"}}' http://localhost:3000/quizzes
-
 Test quizzes
 curl -d '{"previous_questions": [2],"quiz_category": {"type":"Geography","id": "2"}}' -H 'Content-Type: application/json' -X POST http://127.0.0.1:5000/quizzes
