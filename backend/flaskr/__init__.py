@@ -24,12 +24,7 @@ def create_app(test_config=None):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
 
- 
-  @app.route("/")
-  def hello():
-    return "hello"
-
-    
+  
   @app.route("/categories")
   def get_categories():
     categories = Category.query.all()
@@ -142,19 +137,48 @@ def create_app(test_config=None):
         abort(400)
 
  
-
-  '''
-  @TODO: 
-  Create a POST endpoint to get questions to play the quiz. 
-  This endpoint should take category and previous question parameters 
-  and return a random questions within the given category, 
-  if provided, and that is not one of the previous questions. 
-
-  TEST: In the "Play" tab, after a user selects "All" or a category,
-  one question at a time is displayed, the user is allowed to answer
-  and shown whether they were correct or not. 
-  '''
-
+  @app.route("/quizzes", methods=['POST'])
+  def start_quiz():
+    body = request.get_json()
+    new_questions = []
+    try:
+      category_id = body["quiz_category"]["id"]
+      category_id = int(category_id)
+      category_type = body["quiz_category"]["type"]
+      previous_questions = body["previous_questions"]
+      if category_type == "click":
+        questions = Question.query.all()
+        formatted_questions = [question.format() for question in questions]
+      else:
+        questions = Question.query.filter_by(category=category_id).all()
+        formatted_questions = [question.format() for question in questions]
+      
+      for question in formatted_questions:
+        if question["id"] not in previous_questions:
+          new_questions.append(question)
+      if len(new_questions) ==0:
+        dummy_question = {
+        "id":99,
+        "question": "no more questions left in this category",
+        "catgory": category_id,
+        "answer": "add new questions to this category"
+           }
+        return jsonify({
+        'success': True,
+        'question': dummy_question
+        })
+      random_number = random.randint(0,len(new_questions)-1)
+      question = new_questions[random_number]
+      
+      return jsonify({
+        'success': True,
+        'question': question
+      })
+    except Exception as e:
+      print(e)
+      abort(422)
+      
+      
   
   @app.errorhandler(400)
   def bad_request(error):
